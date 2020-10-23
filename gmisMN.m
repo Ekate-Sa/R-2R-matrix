@@ -1,17 +1,15 @@
-function a = gmisMN(M, N, min, max) % - горизонтальная
+function amatrix = gmisMN(M, N, a, b) % - horizontal
 % MxN - размерность матрицы
-%min, max - диапазон слева направо
+% ax^2 + bx + c ; x is percent per step
 for i=1:M
     for j=1:N
-        a(i,j)=0;
+        amatrix(i,j)=0;
     end
 end
 
-step = ( max - min )/(N-1);
-
 for i=1:M
     for j=1:N
-        a(i,j)=a(i,j)+(1 *(min/100 + (j-1)*step/100));
+        amatrix(i,j)=amatrix(i,j)+( a*(j-1)^2 + b*(j-1) )/100;
         
     end
 end

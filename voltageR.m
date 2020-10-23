@@ -1,4 +1,5 @@
-%получает 2 массива Vout и строит графики
+% получает массив koef, напряжение Vsup и строит график Vout //
+% returns 2 arrays: Vout and perfect Vout ; also plots Vout/perf
 function [Vout,Vout_perf] = voltageR(koef,Vsup)
 
 razr = length(koef);
@@ -20,12 +21,12 @@ for i=1:N
     end
 end
 
-figure;
-title('Выходная характеристика');
-plot(Vout_perf, 'r--');
-hold on;
-plot(Vout);
-grid on;
-hold off;
+% figure;
+% title('Выходная характеристика');
+% plot(Vout_perf, 'r--');
+% hold on;
+% plot(Vout);
+% grid on;
+% hold off;
 end
 

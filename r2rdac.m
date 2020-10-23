@@ -12,20 +12,35 @@ Rmatrix = [16 4 6 8 10 12 16 ;
 14 13 11 9 7 5 14 ;
 16 12 10 8 6 4 16 ;] ;
 
+%без компенсации
+% Rmatrix = [0 1 3 5 7 9 11 13 15 ; 
+% -1 2 4 6 8 10 12 14 16 ;
+% -1 2 4 6 8 10 12 14 16 ; ] ;
+
 % 0 - R0, .. , 2 2 - в сумме R2
 siz = size(Rmatrix);
-M = siz(1); %число строк
-N = siz(2); %число столбцов
-razr = 8; %число разрядов_____надо вводить
+M = siz(1); %число строк // raws
+N = siz(2); %число столбцов // columns
+razr = 8; %число разрядов_____надо вводить // bits
 
-min_g = 4; % min - слева, max - справа; _____надо вводить
-max_g = 18;
-min_v = 10; % для вертикальных сверху вниз
-max_v = -6;
-%получили матрицу с градиентом ++++++++
-res_real = ones(M, N) + gmisMN(M, N, min_g, max_g) + vmisMN(M,N,min_v,max_v) 
+% quadratic gradient
+quad_max_g = 16 ;
+quad_max_v = 16 ;
+ag = quad_max_g / (N-1)^2 ;
+av = quad_max_v / (M-1)^2 ;
 
-R0 = 0; % отдельно R0, чтобы было проще с нумерацией ++++
+% linear gradient w/symmetry
+lin_max_g = 8 ;
+lin_max_v = 8 ;
+cg = (-1)* lin_max_g ; 
+cv = (-1)* lin_max_v ;
+bg = 2 * lin_max_g / (N-1) ;
+bv = 2 * lin_max_v / (M-1) ;
+
+% matrix of nominals w/gradients ++++++++
+res_real = ones(M, N) + gmisMN(M, N, ag, bg) + vmisMN(M,N,av,bv) + (cg + cv)/100 
+
+R0 = 0; % separate R0 to simplify numeration ++++
 for i = 1 : M
     for j = 1 : N
         if ( Rmatrix(i,j) == 0 ) 
@@ -33,7 +48,7 @@ for i = 1 : M
         end
     end
 end
-% получаем массив R1 - R16 ++++++
+% get array R1 - R[2razr] (no R0) ++++++
 for k = 1:razr*2
     R(k) = 0;
     for i = 1 : M
@@ -66,7 +81,7 @@ for k = (razr-2):-1:1
     Raf(k) = par(a , b ) + c ;
 end
 
-%получаем массив коэф-в ++++++++ (при идеальных R получилось правильно)
+%получаем массив коэф-в ++++++++ (ok w/ perfect R's)
 for k = 1:razr
     koef(k) = 0;
 end
@@ -92,8 +107,7 @@ DNL(1) = Vout(1)/lsb - 1;
 for k = 2:length(Vout)
     DNL(k) = (Vout(k)-Vout(k-1))/lsb - 1;
 end
-%DNL_perf = DNL; ___ установить 
-DNL = DNL-DNL_perf;
+%DNL_perf = DNL; use if perfect needed
 
 figure;
 
@@ -104,7 +118,7 @@ grid on;
 % получаем INL
 INL = abs(Vout - Vout_perf)/lsb ;
 %INL_perf = INL; ___ установить 
-INL = INL - INL_perf;
+%INL = INL - INL_perf;
 figure;
 
 plot(INL);

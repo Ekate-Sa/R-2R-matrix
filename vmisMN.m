@@ -1,17 +1,15 @@
-function a = vmisMN(M, N, min, max) % - горизонтальная
+function amatrix = vmisMN(M, N, a, b) % - vertical
 % MxN - размерность матрицы
-%min, max - в каком диапазоне меняется ошибка
+% ax^2 + bx + c ; x is percent per step
 for i=1:M
     for j=1:N
-        a(i,j)=0;
+        amatrix(i,j)=0;
     end
 end
 
-step = ( max - min )/(M-1);
-
 for i=1:M
     for j=1:N
-        a(i,j)=a(i,j)+(1 * (min/100 + (i-1)*step/100));
+        amatrix(i,j)=amatrix(i,j)+ ( a*(i-1)^2 + b*(i-1)  )/100;
         
     end
 end
