@@ -24,10 +24,15 @@ N = siz(2); %число столбцов // columns
 razr = 8; %число разрядов_____надо вводить // bits
 
 % quadratic gradient
-quad_max_g = 16 ;
-quad_max_v = 16 ;
-ag = quad_max_g / (N-1)^2 ;
-av = quad_max_v / (M-1)^2 ;
+quad_max_g = 0 ;
+quad_max_v = 0 ;
+% UNCOMMENT OUR FIGHTER (+fix vmisMN, gmisMN)
+    % No symmetry
+%     ag = quad_max_g / ( N-1 )^2 ;
+%     av = quad_max_v / ( M-1 )^2 ;
+    % Nice symmetry
+    ag = quad_max_g / ( (N+1)/2 - 1 )^2 ;
+    av = quad_max_v / ( (M+1)/2 - 1 )^2 ;
 
 % linear gradient w/symmetry
 lin_max_g = 8 ;
@@ -39,6 +44,9 @@ bv = 2 * lin_max_v / (M-1) ;
 
 % matrix of nominals w/gradients ++++++++
 res_real = ones(M, N) + gmisMN(M, N, ag, bg) + vmisMN(M,N,av,bv) + (cg + cv)/100 
+% visual of gradients
+figure;
+mesh(res_real);
 
 R0 = 0; % separate R0 to simplify numeration ++++
 for i = 1 : M
